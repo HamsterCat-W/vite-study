@@ -72,3 +72,105 @@ export default defineConfig({
   plugins: [react()]
 })
 ```
+
+#### 3. 样式方案
+
+采用原子类样式（tailwind or unocss） 和 css 与处理器（less)
+
+安装原子类样式
+
+```bash
+pnpm add -D unocss
+```
+
+插件安装
+
+```js
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'
+import Unocss from 'unocss/vite'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  // 可以通过 root 参数配置项目根目录的位置
+  // root: path.join(__dirname, 'src'),
+  plugins: [react(), Unocss()]
+})
+```
+
+在 mian.ts 中引入样式
+
+```tsx
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.tsx'
+import './index.css'
+import 'virtual:uno.css'
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+)
+```
+
+测试
+
+```js
+//test.jsx
+export default () => {
+  return (
+    <>
+      <div className="flex justify-center">
+        <div className="mr-2">这是测试原子样式</div>
+        <div className="text-gray">Test</div>
+      </div>
+    </>
+  )
+}
+```
+
+安装 less css 预处理器
+
+```bash
+ pnpm install less
+
+```
+
+全局 less 变量 src/styles/variavle.less
+
+自动在使用的地方引入 less 变量
+
+```js
+import { defineConfig, normalizePath } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'
+import Unocss from 'unocss/vite'
+
+const variablesPath = path.resolve(__dirname, './src/styles/variable.less')
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  // 可以通过 root 参数配置项目根目录的位置
+  // root: path.join(__dirname, 'src'),
+  plugins: [react(), Unocss()],
+  css: {
+    preprocessorOptions: {
+      less: {
+        javascriptEnabled: true,
+        // 自动引入
+        additionalData: `@import '${normalizePath(variablesPath)}';`
+      }
+    }
+  }
+})
+```
+
+test.less
+
+```less
+.test {
+  color: @primary-color;
+}
+```
