@@ -17,5 +17,10 @@ export default defineConfig({
         additionalData: `@import '${normalizePath(variablesPath)}';`
       }
     }
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    }
   }
 })
